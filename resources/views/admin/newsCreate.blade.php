@@ -19,7 +19,7 @@
             <h2>發布新聞</h2>
         </header>
 
-        <form method="POST" action="admin/news/create">
+        <form method="POST" action="/admin/news/create">
             @csrf
 
             <div class="form-group">

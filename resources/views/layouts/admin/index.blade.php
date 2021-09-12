@@ -26,29 +26,29 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link active" href="#">首頁</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">全球</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">社會</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">運動</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">首頁</a></li>
+                @foreach($categories as $category)
+                    <li class="nav-item"><a class="nav-link" href="/admin/categories/{{ $category->id }}">{{ $category->title }}</a></li>
+                @endforeach
                 @guest
                     <li class="nav-item">
-                        <a class="nav-link" href="admin/login">{{ __('登入') }}</a>
+                        <a class="nav-link" href="/admin/login">{{ __('登入') }}</a>
                     </li>
                 @else
-                    <li class="nav-item"><a class="nav-link" href="admin/news/create">{{ __('發布新聞') }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/news/create">{{ __('發布新聞') }}</a></li>
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             {{ Auth::user()->name }}
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="admin/logout"
+                            <a class="dropdown-item" href="/admin/logout"
                                onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                 {{ __('登出') }}
                             </a>
 
-                            <form id="logout-form" action="admin/logout" method="POST" class="d-none">
+                            <form id="logout-form" action="/admin/logout" method="POST" class="d-none">
                                 @csrf
                             </form>
                         </div>
@@ -78,16 +78,9 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <ul class="list-unstyled mb-0">
-                                <li><a href="#!">Web Design</a></li>
-                                <li><a href="#!">HTML</a></li>
-                                <li><a href="#!">Freebies</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-sm-6">
-                            <ul class="list-unstyled mb-0">
-                                <li><a href="#!">JavaScript</a></li>
-                                <li><a href="#!">CSS</a></li>
-                                <li><a href="#!">Tutorials</a></li>
+                                @foreach($tagUseds as $tagUsed)
+                                    <li><a href="/tags/{{ $tagUsed->id }}">{{ $tagUsed->title }}</a></li>
+                                @endforeach
                             </ul>
                         </div>
                     </div>
