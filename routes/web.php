@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 //});
 
 Route::get('/', 'NewsController@index');
+  Route::get('/news', 'NewsController@index');
 Route::get('/news/{id}', 'NewsController@show');
 Route::get('/categories/{id}', 'CategoryController@show');
 Route::get('/tags/{id}', 'TagController@show');
