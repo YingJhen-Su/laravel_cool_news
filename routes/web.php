@@ -13,10 +13,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+//Route::get('/', function () {
+//    return view('welcome');
+//});
+
+Route::get('/', 'NewsController@index');
+Route::get('/news/{id}', 'NewsController@show');
+Route::get('/categories/{id}', 'CategoryController@show');
+Route::get('/tags/{id}', 'TagController@show');
+
+Route::prefix('admin')->group(function () {
+  Route::get('/login','Auth\LoginController@showLoginForm');
+  Route::post('/login','Auth\LoginController@login');
 });
 
-Auth::routes();
+Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
+  Route::post('/logout','Auth\LoginController@logout');
+  Route::resource('news', 'NewsController');
+  Route::get('/categories/{id}', 'CategoryController@show');
+  Route::get('/tags/{id}', 'TagController@show');
+});
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//Auth::routes();
+//Route::get('/home', 'HomeController@index')->name('home');
