@@ -28,13 +28,11 @@
                 <p class="fs-5 mb-4">{{ $new->content }}</p>
             </section>
         </article>
-        <a class="btn btn-primary" href="/admin/news/{{ $new->id }}/edit">編輯</a>
         <form method="POST" action="/admin/news/{{ $new->id }}">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn btn-primary">
-                刪除
-            </button>
+            <a class="btn btn-primary" href="/admin/news/{{ $new->id }}/edit">編輯</a>
+            <button type="submit" class="btn btn-primary">刪除</button>
         </form>
     </div>
 @endsection
