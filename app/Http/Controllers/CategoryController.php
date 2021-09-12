@@ -7,6 +7,11 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
+  public function __construct()
+  {
+    $this->categories = Category::all();
+  }
+
   /**
    * Display the specified resource.
    *
@@ -16,7 +21,7 @@ class CategoryController extends Controller
   public function show(Request $request, $id)
   {
     $newsCount = Category::find($id)->news()->count();
-    $newsPerPage = 5;
+    $newsPerPage = 3;
     $pageCount = ceil($newsCount / $newsPerPage);
     $currentPage = isset($request->all()['psge']) ? $request->all()['psge'] : 1;
 
@@ -27,10 +32,24 @@ class CategoryController extends Controller
                                 ->limit($newsPerPage)
                                 ->get();
 
-    return view('123', [
-      'news' => $news,
-      'newsCount' => $newsCount,
-      'pageCount' => $pageCount
+    $tagUseds = array();
+    foreach ($news as $new){
+      foreach ($new->tags as $tag) {
+        if (!in_array($tag, $tagUseds)) {
+          $tagUseds[] = $tag;
+        }
+      }
+    }
+
+    $header = Category::find($id)->title."新聞";
+
+    return view('newsList', [
+      'news'        => $news,
+      'categories'  => $this->categories,
+      'tagUseds'    => $tagUseds,
+      'currentPage' => $currentPage,
+      'pageCount'   => $pageCount,
+      'header'      => $header
     ]);
   }
 }

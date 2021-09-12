@@ -13,6 +13,12 @@ class News extends Model
 
     protected $guarded = [''];
 
+    protected $appends = ['short_content'];
+
+    public function getShortContentAttribute() {
+      return mb_substr($this->content, 0, 200, "utf-8")."......";
+    }
+
     public function user()
     {
       return $this->belongsTo(User::class);
