@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Tag;
 use App\Models\Category;
+use App\Http\Libraries\Helper;
 
 class TagController extends Controller
 {
@@ -28,23 +29,12 @@ class TagController extends Controller
     $currentPage = isset($request->all()['psge']) ? $request->all()['psge'] : 1;
 
     $news = Tag::find($id)->news()
-                          ->with(['tags'])
                           ->orderBy('created_at', 'desc')
                           ->offset($newsPerPage * ($currentPage-1))
                           ->limit($newsPerPage)
                           ->get();
 
-    $tagIds = array();
-    $tagUseds = array();
-    foreach ($news as $new){
-      foreach ($new->tags as $tag) {
-        if (!in_array($tag->id, $tagIds)) {
-          $tagUseds[] = $tag;
-          $tagIds[] = $tag->id;
-        }
-      }
-    }
-
+    $tagUseds = Helper::getTagUseds($news);
     $header = Tag::find($id)->title."相關新聞";
 
     return view('admin.newsList', [

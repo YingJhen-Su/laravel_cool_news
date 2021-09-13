@@ -6,12 +6,14 @@ use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use App\Models\News;
+use App\Http\Libraries\Helper;
 
 class NewsController extends Controller
 {
     public function __construct()
     {
       $this->categories = Category::all();
+      $this->tags = Tag::all();
     }
 
     /**
@@ -21,16 +23,8 @@ class NewsController extends Controller
      */
     public function index(Request $request)
     {
-      $tags = Tag::all();
+      $tagUseds = Helper::getNewsTagUseds($this->tags);
 
-      $tagIds = array();
-      $tagUseds = array();
-      foreach ($tags as $tag) {
-        if (count($tag->news) > 0 && !in_array($tag->id, $tagIds)) {
-          $tagUseds[] = $tag;
-          $tagIds[] = $tag->id;
-        }
-    }
       $newsCount = News::count();
       $newsPerPage = 3;
       $pageCount = ceil($newsCount / $newsPerPage);
@@ -64,13 +58,12 @@ class NewsController extends Controller
     {
       $new = News::find($id);
       $tagUseds = $new->tags;
-      $header = $new->title;
 
       return view('newsRead', [
         'new'        => $new,
         'tagUseds'   => $tagUseds,
         'categories' => $this->categories,
-        'header'     => $header
+        'header'     => '新聞內容'
       ]);
     }
 }

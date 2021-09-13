@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Libraries\Helper;
 
 
 class NewsController extends Controller
@@ -25,16 +26,6 @@ class NewsController extends Controller
      */
     public function index(Request $request)
     {
-      $tags = Tag::all();
-
-      $tagIds = array();
-      $tagUseds = array();
-      foreach ($tags as $tag) {
-        if (count($tag->news) > 0 && !in_array($tag->id, $tagIds)) {
-          $tagUseds[] = $tag;
-          $tagIds[] = $tag->id;
-        }
-    }
       $newsCount = News::count();
       $newsPerPage = 3;
       $pageCount = ceil($newsCount / $newsPerPage);
@@ -46,6 +37,7 @@ class NewsController extends Controller
                     ->with(['tags'])
                     ->get();
 
+      $tagUseds = Helper::getNewsTagUseds($this->tags);
       $header = "最新發布新聞";
 
       return view('admin.newsList', [
@@ -67,9 +59,9 @@ class NewsController extends Controller
     {
 
       return view('admin.newsCreate', [
-        'categories'  => $this->categories,
-        'tags'        => $this->tags,
-        'header'      => '發布新聞'
+        'categories' => $this->categories,
+        'tags'       => $this->tags,
+        'header'     => '發布新聞'
       ]);
     }
 
@@ -102,13 +94,12 @@ class NewsController extends Controller
     {
       $new = News::find($id);
       $tagUseds = $new->tags;
-      $header = $new->title;
 
       return view('admin.newsRead', [
         'new'        => $new,
         'tagUseds'   => $tagUseds,
         'categories' => $this->categories,
-        'header'     => $header
+        'header'     => '新聞內容'
       ]);
     }
 
@@ -121,12 +112,7 @@ class NewsController extends Controller
     public function edit($id)
     {
       $news = News::find($id);
-      $tags = $news->tags;
-
-      $newsTagIds = array();
-      foreach ($tags as $tag) {
-        $newsTagIds[] = $tag->id;
-      }
+      $newsTagIds = Helper::getNewsTagIds($news->tags);
 
       return view('admin.newsEdit', [
         'news'       => $news,
@@ -147,17 +133,12 @@ class NewsController extends Controller
     public function update(Request $request, $id)
     {
       $news = News::find($id);
-      $tags = $news->tags;
-
-      $newsTagIds = array();
-      foreach ($tags as $tag) {
-        $newsTagIds[] = $tag->id;
-      }
 
       $validatedData = $this->validateNews($request);
       $news->update($validatedData);
 
       $tagChanges = $validatedData['tag_id'];
+      $newsTagIds = Helper::getNewsTagIds($news->tags);
 
       foreach($tagChanges as $tagChange) {
         if (!in_array($tagChange, $newsTagIds)) {

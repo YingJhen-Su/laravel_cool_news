@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Http\Libraries\Helper;
 
 class CategoryController extends Controller
 {
@@ -32,17 +33,8 @@ class CategoryController extends Controller
                                 ->offset($newsPerPage * ($currentPage-1))
                                 ->limit($newsPerPage)
                                 ->get();
-    $tagIds = array();
-    $tagUseds = array();
-    foreach ($news as $new){
-      foreach ($new->tags as $tag) {
-        if (!in_array($tag->id, $tagIds)) {
-          $tagUseds[] = $tag;
-          $tagIds[] = $tag->id;
-        }
-      }
-    }
 
+    $tagUseds = Helper::getTagUseds($news);
     $header = Category::find($id)->title."新聞";
 
     return view('admin.newsList', [
