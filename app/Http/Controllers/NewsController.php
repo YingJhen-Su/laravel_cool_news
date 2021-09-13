@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Tag;
-use Illuminate\Http\Request;
 use App\Models\News;
+use App\Models\Tag;
+use App\Models\Category;
+use Illuminate\Http\Request;
 use App\Http\Libraries\Helper;
+
 
 class NewsController extends Controller
 {
@@ -23,11 +24,9 @@ class NewsController extends Controller
      */
     public function index(Request $request)
     {
-      $tagUseds = Helper::getNewsTagUseds($this->tags);
-
-      $newsCount = News::count();
+      $newsCount   = News::count();
       $newsPerPage = 3;
-      $pageCount = ceil($newsCount / $newsPerPage);
+      $pageCount   = ceil($newsCount / $newsPerPage);
       $currentPage = isset($request->all()['psge']) ? $request->all()['psge'] : 1;
 
       $news = News::orderBy('created_at', 'desc')
@@ -36,6 +35,7 @@ class NewsController extends Controller
                     ->with(['tags'])
                     ->get();
 
+      $tagUseds = Helper::getNewsTagUseds($this->tags);
       $header = "最新發布新聞";
 
       return view('newsList', [
@@ -56,7 +56,7 @@ class NewsController extends Controller
      */
     public function show($id)
     {
-      $onenews = News::find($id);
+      $onenews  = News::find($id);
       $tagUseds = $onenews->tags;
 
       return view('newsRead', [

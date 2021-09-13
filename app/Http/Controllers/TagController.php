@@ -22,9 +22,9 @@ class TagController extends Controller
    */
   public function show(Request $request, $id)
   {
-    $newsCount = Tag::find($id)->news()->count();
+    $newsCount   = Tag::find($id)->news()->count();
     $newsPerPage = 3;
-    $pageCount = ceil($newsCount / $newsPerPage);
+    $pageCount   = ceil($newsCount / $newsPerPage);
     $currentPage = isset($request->all()['psge']) ? $request->all()['psge'] : 1;
 
     $news = Tag::find($id)->news()

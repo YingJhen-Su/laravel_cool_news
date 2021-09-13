@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\News;
-use App\Models\Category;
 use App\Models\Tag;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Libraries\Helper;
@@ -19,6 +19,7 @@ class NewsController extends Controller
       $this->categories = Category::all();
       $this->tags = Tag::all();
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -26,9 +27,9 @@ class NewsController extends Controller
      */
     public function index(Request $request)
     {
-      $newsCount = News::count();
+      $newsCount   = News::count();
       $newsPerPage = 3;
-      $pageCount = ceil($newsCount / $newsPerPage);
+      $pageCount   = ceil($newsCount / $newsPerPage);
       $currentPage = isset($request->all()['psge']) ? $request->all()['psge'] : 1;
 
       $news = News::orderBy('created_at', 'desc')
@@ -57,7 +58,6 @@ class NewsController extends Controller
      */
     public function create()
     {
-
       return view('admin.newsCreate', [
         'categories' => $this->categories,
         'tags'       => $this->tags,
@@ -92,7 +92,7 @@ class NewsController extends Controller
      */
     public function show($id)
     {
-      $onenews = News::find($id);
+      $onenews  = News::find($id);
       $tagUseds = $onenews->tags;
 
       return view('admin.newsRead', [

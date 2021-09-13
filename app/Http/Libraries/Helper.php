@@ -2,11 +2,6 @@
 
 namespace App\Http\Libraries;
 
-use App\Models\News;
-use App\Models\Category;
-use App\Models\Tag;
-use Illuminate\Http\Request;
-
 class Helper
 {
   public static function getNewsTagUseds($tags)
