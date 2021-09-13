@@ -23,10 +23,12 @@ class NewsController extends Controller
     {
       $tags = Tag::all();
 
+      $tagIds = array();
       $tagUseds = array();
       foreach ($tags as $tag) {
-        if (count($tag->news) > 0) {
+        if (count($tag->news) > 0 && !in_array($tag->id, $tagIds)) {
           $tagUseds[] = $tag;
+          $tagIds[] = $tag->id;
         }
     }
       $newsCount = News::count();

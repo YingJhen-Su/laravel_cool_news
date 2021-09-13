@@ -32,12 +32,13 @@ class TagController extends Controller
                           ->offset($newsPerPage * ($currentPage-1))
                           ->limit($newsPerPage)
                           ->get();
-
+    $tagIds = array();
     $tagUseds = array();
     foreach ($news as $new){
       foreach ($new->tags as $tag) {
-        if (!in_array($tag, $tagUseds)) {
+        if (!in_array($tag->id, $tagIds)) {
           $tagUseds[] = $tag;
+          $tagIds[] = $tag->id;
         }
       }
     }
