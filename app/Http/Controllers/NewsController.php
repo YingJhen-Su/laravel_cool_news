@@ -27,7 +27,7 @@ class NewsController extends Controller
       $newsCount   = News::count();
       $newsPerPage = 3;
       $pageCount   = ceil($newsCount / $newsPerPage);
-      $currentPage = isset($request->all()['psge']) ? $request->all()['psge'] : 1;
+      $currentPage = isset($request->all()['page']) ? $request->all()['page'] : 1;
 
       $news = News::orderBy('created_at', 'desc')
                     ->offset($newsPerPage * ($currentPage-1))

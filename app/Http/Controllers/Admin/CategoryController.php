@@ -25,7 +25,7 @@ class CategoryController extends Controller
     $newsCount   = Category::find($id)->news()->count();
     $newsPerPage = 3;
     $pageCount   = ceil($newsCount / $newsPerPage);
-    $currentPage = isset($request->all()['psge']) ? $request->all()['psge'] : 1;
+    $currentPage = isset($request->all()['page']) ? $request->all()['page'] : 1;
 
     $news = Category::find($id)->news()
                                 ->with(['tags'])

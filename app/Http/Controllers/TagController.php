@@ -25,7 +25,7 @@ class TagController extends Controller
     $newsCount   = Tag::find($id)->news()->count();
     $newsPerPage = 3;
     $pageCount   = ceil($newsCount / $newsPerPage);
-    $currentPage = isset($request->all()['psge']) ? $request->all()['psge'] : 1;
+    $currentPage = isset($request->all()['page']) ? $request->all()['page'] : 1;
 
     $news = Tag::find($id)->news()
                           ->orderBy('created_at', 'desc')
