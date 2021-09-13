@@ -34,18 +34,20 @@ class TagController extends Controller
                           ->limit($newsPerPage)
                           ->get();
 
+    $tagIds = array();
     $tagUseds = array();
     foreach ($news as $new){
       foreach ($new->tags as $tag) {
-        if (!in_array($tag, $tagUseds)) {
+        if (!in_array($tag->id, $tagIds)) {
           $tagUseds[] = $tag;
+          $tagIds[] = $tag->id;
         }
       }
     }
 
     $header = Tag::find($id)->title."相關新聞";
 
-    return view('newsList', [
+    return view('admin.newsList', [
       'news'        => $news,
       'categories'  => $this->categories,
       'tagUseds'    => $tagUseds,

@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\News;
 use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
-use App\Models\News;
+use Illuminate\Support\Facades\Validator;
 
 
 class NewsController extends Controller
@@ -15,6 +16,7 @@ class NewsController extends Controller
     public function __construct()
     {
       $this->categories = Category::all();
+      $this->tags = Tag::all();
     }
     /**
      * Display a listing of the resource.
@@ -25,10 +27,12 @@ class NewsController extends Controller
     {
       $tags = Tag::all();
 
+      $tagIds = array();
       $tagUseds = array();
       foreach ($tags as $tag) {
-        if (count($tag->news) > 0) {
+        if (count($tag->news) > 0 && !in_array($tag->id, $tagIds)) {
           $tagUseds[] = $tag;
+          $tagIds[] = $tag->id;
         }
     }
       $newsCount = News::count();
@@ -61,7 +65,12 @@ class NewsController extends Controller
      */
     public function create()
     {
-      return view('123');
+
+      return view('admin.newsCreate', [
+        'categories'  => $this->categories,
+        'tags'        => $this->tags,
+        'header'      => '發布新聞'
+      ]);
     }
 
     /**
@@ -78,9 +87,9 @@ class NewsController extends Controller
       $news->user_id = auth()->id();
       $news->save();
 
-      $news->tags()->attach($validatedData['tags']);
+      $news->tags()->attach($validatedData['tag_id']);
 
-
+      return redirect('/admin/news/'.$news->id);
     }
 
     /**
@@ -111,8 +120,21 @@ class NewsController extends Controller
      */
     public function edit($id)
     {
-      $news = News::find($id)->get();
-      return view('123', ['news' => $news]);
+      $news = News::find($id);
+      $tags = $news->tags;
+
+      $newsTagIds = array();
+      foreach ($tags as $tag) {
+        $newsTagIds[] = $tag->id;
+      }
+
+      return view('admin.newsEdit', [
+        'news'       => $news,
+        'categories' => $this->categories,
+        'tags'       => $this->tags,
+        'newsTagIds' => $newsTagIds,
+        'header'     => '編輯新聞'
+      ]);
     }
 
     /**
@@ -127,24 +149,29 @@ class NewsController extends Controller
       $news = News::find($id);
       $tags = $news->tags;
 
+      $newsTagIds = array();
+      foreach ($tags as $tag) {
+        $newsTagIds[] = $tag->id;
+      }
+
       $validatedData = $this->validateNews($request);
       $news->update($validatedData);
 
-      $tagChanges = $validatedData['tags'];
+      $tagChanges = $validatedData['tag_id'];
 
       foreach($tagChanges as $tagChange) {
-        if (!in_array($tagChange, $tags)) {
+        if (!in_array($tagChange, $newsTagIds)) {
           $news->tags()->attach($tagChange);
         }
       }
 
-      foreach ($tags as $tag) {
-        if (!in_array($tag, $tagChanges)) {
-          $news->tags()->detach($tag);
+      foreach ($newsTagIds as $newsTagId) {
+        if (!in_array($newsTagId, $tagChanges)) {
+          $news->tags()->detach($newsTagId);
         }
       }
 
-      return view('123');
+      return redirect('/admin/news/'.$news->id);
     }
 
     /**
@@ -155,17 +182,22 @@ class NewsController extends Controller
      */
     public function destroy($id)
     {
-      News::find($id)->delete();
-      return redirect('123');
+      $news = News::find($id);
+      $news->tags()->detach();
+      $news->delete();
+
+      return redirect('/admin/news');
     }
 
     public function validateNews(Request $request)
     {
-      return $request->validate([
-        'title' => 'required|string',
-        'content' => 'required|string',
-        'category_id' => 'require|exists:categories,id',
-        'tag'      => 'exists:tags,id'
+      $validator = Validator::make($request->all(), [
+        'title'       => 'required|string',
+        'content'     => 'required|string',
+        'category_id' => 'required|exists:categories,id',
+        'tag_id'      => 'exists:tags,id'
       ]);
+
+      return $validator->validate();
     }
 }
