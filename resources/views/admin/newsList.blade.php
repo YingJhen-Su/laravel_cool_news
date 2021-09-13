@@ -28,11 +28,11 @@
     <nav aria-label="Pagination">
         <hr class="my-0" />
         <ul class="pagination justify-content-center my-4">
-            <li class="page-item @if ($currentPage == 1) disabled @endif"><a class="page-link" href="/admin/news?page={{ $currentPage-1 }}" tabindex="-1" aria-disabled="true">Newer</a></li>
+            <li class="page-item @if ($currentPage == 1) disabled @endif"><a class="page-link" href="?page={{ $currentPage-1 }}" tabindex="-1" aria-disabled="true">Newer</a></li>
             @for ($i = 1 ; $i <= $pageCount ; $i++)
-                <li class="page-item @if ($i == $currentPage) active @endif" aria-current="page"><a class="page-link" href="/admin/news?page={{ $i }}">{{ $i }}</a></li>
+                <li class="page-item @if ($i == $currentPage) active @endif" aria-current="page"><a class="page-link" href="?page={{ $i }}">{{ $i }}</a></li>
             @endfor
-            <li class="page-item @if ($currentPage == $pageCount) disabled @endif"><a class="page-link" href="/admin/news?page={{ $currentPage+1 }}">Older</a></li>
+            <li class="page-item @if ($currentPage == $pageCount) disabled @endif"><a class="page-link" href="?page={{ $currentPage+1 }}">Older</a></li>
         </ul>
     </nav>
 </div>
