@@ -92,11 +92,11 @@ class NewsController extends Controller
      */
     public function show($id)
     {
-      $new = News::find($id);
-      $tagUseds = $new->tags;
+      $onenews = News::find($id);
+      $tagUseds = $onenews->tags;
 
       return view('admin.newsRead', [
-        'new'        => $new,
+        'onenews'    => $onenews,
         'tagUseds'   => $tagUseds,
         'categories' => $this->categories,
         'header'     => '新聞內容'
