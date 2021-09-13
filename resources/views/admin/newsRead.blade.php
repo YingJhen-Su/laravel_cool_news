@@ -25,7 +25,7 @@
 
             <!-- Post content-->
             <section class="mb-5">
-                <p class="fs-5 mb-4">{{ $new->content }}</p>
+                <p style="white-space: pre-line;" class="fs-5 mb-4">{{ $new->content }}</p>
             </section>
         </article>
         <form method="POST" action="/admin/news/{{ $new->id }}">
