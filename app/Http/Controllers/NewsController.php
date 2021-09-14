@@ -56,7 +56,7 @@ class NewsController extends Controller
      */
     public function show($id)
     {
-      $onenews  = News::find($id);
+      $onenews  = News::findOrFail($id);
       $tagUseds = $onenews->tags;
 
       return view('newsRead', [

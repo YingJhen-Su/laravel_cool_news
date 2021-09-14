@@ -21,17 +21,17 @@ class CategoryController extends Controller
    */
   public function show(Request $request, $id)
   {
-    $newsCount   = Category::find($id)->news()->count();
+    $newsCount   = Category::findOrFail($id)->news()->count();
     $newsPerPage = 3;
     $pageCount   = ceil($newsCount / $newsPerPage);
     $currentPage = isset($request->all()['page']) ? $request->all()['page'] : 1;
 
-    $news = Category::find($id)->news()
-                                ->with(['tags'])
-                                ->orderBy('created_at', 'desc')
-                                ->offset($newsPerPage * ($currentPage-1))
-                                ->limit($newsPerPage)
-                                ->get();
+    $news = Category::findOrFail($id)->news()
+                                     ->with(['tags'])
+                                     ->orderBy('created_at', 'desc')
+                                     ->offset($newsPerPage * ($currentPage-1))
+                                     ->limit($newsPerPage)
+                                     ->get();
 
     $tagUseds = Helper::getTagUseds($news);
     $header = Category::find($id)->title."新聞";

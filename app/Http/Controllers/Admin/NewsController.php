@@ -92,7 +92,7 @@ class NewsController extends Controller
      */
     public function show($id)
     {
-      $onenews  = News::find($id);
+      $onenews  = News::findOrFail($id);
       $tagUseds = $onenews->tags;
 
       return view('admin.newsRead', [
@@ -111,7 +111,7 @@ class NewsController extends Controller
      */
     public function edit($id)
     {
-      $news = News::find($id);
+      $news = News::findOrFail($id);
       $newsTagIds = Helper::getNewsTagIds($news->tags);
 
       return view('admin.newsEdit', [
@@ -132,7 +132,7 @@ class NewsController extends Controller
      */
     public function update(Request $request, $id)
     {
-      $news = News::find($id);
+      $news = News::findOrFail($id);
 
       $validatedData = $this->validateNews($request);
       $news->update($validatedData);
@@ -163,7 +163,7 @@ class NewsController extends Controller
      */
     public function destroy($id)
     {
-      $news = News::find($id);
+      $news = News::findOrFail($id);
       $news->tags()->detach();
       $news->delete();
 

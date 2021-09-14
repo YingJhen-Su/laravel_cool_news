@@ -23,16 +23,16 @@ class TagController extends Controller
    */
   public function show(Request $request, $id)
   {
-    $newsCount   = Tag::find($id)->news()->count();
+    $newsCount   = Tag::findOrFail($id)->news()->count();
     $newsPerPage = 3;
     $pageCount   = ceil($newsCount / $newsPerPage);
     $currentPage = isset($request->all()['page']) ? $request->all()['page'] : 1;
 
-    $news = Tag::find($id)->news()
-                          ->orderBy('created_at', 'desc')
-                          ->offset($newsPerPage * ($currentPage-1))
-                          ->limit($newsPerPage)
-                          ->get();
+    $news = Tag::findOrFail($id)->news()
+                                ->orderBy('created_at', 'desc')
+                                ->offset($newsPerPage * ($currentPage-1))
+                                ->limit($newsPerPage)
+                                ->get();
 
     $tagUseds = Helper::getTagUseds($news);
     $header = Tag::find($id)->title."相關新聞";
